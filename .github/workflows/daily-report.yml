@@ -1,67 +1,17 @@
-name: Daily Redemption Monitor
+name: 基金每日净值监控
 
 on:
   schedule:
-    - cron: '0 1 * * 2-5'
-    - cron: '30 6 * * 1-5'
+    - cron: "30 13 * * 1-5"
   workflow_dispatch:
-    inputs:
-      mode:
-        description: 'Monitor mode'
-        required: true
-        type: choice
-        default: 'quick'
-        options:
-          - 'quick'
-          - 'daily'
-          - 'weekly'
 
 jobs:
-  monitor:
+  fund-report:
     runs-on: ubuntu-latest
-    timeout-minutes: 15
-
+    timeout-minutes: 3
     steps:
-      - name: Checkout repository
+      - name: Checkout
         uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
 
-      - name: Setup Python 3.11
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.11'
-          cache: 'pip'
-
-      - name: Install dependencies
-        run: |
-          python -m pip install --upgrade pip
-          pip install -r requirements.txt
-
-      - name: Run ${{ inputs.mode }} monitor
-        env:
-          DINGTALK_WEBHOOK_URL: ${{ secrets.DINGTALK_WEBHOOK_URL }}
-          DINGTALK_SECRET: ${{ secrets.DINGTALK_SECRET }}
-        run: python -m src.main --mode ${{ github.event_name == 'schedule' && 'daily' || inputs.mode || 'daily' }}
-
-      - name: Commit state changes
-        if: always()
-        uses: stefanzweifel/git-auto-commit-action@v5
-        with:
-          commit_message: "chore: update portfolio [skip ci]"
-          file_pattern: "data/portfolio_state.json"
-          commit_user_name: "fund-analysis-bot"
-          commit_user_email: "bot@fund-analysis.local"
-
-      - name: Notify on failure
-        if: failure()
-        env:
-          DINGTALK_WEBHOOK_URL: ${{ secrets.DINGTALK_WEBHOOK_URL }}
-          DINGTALK_SECRET: ${{ secrets.DINGTALK_SECRET }}
-        run: |
-          python -c "
-          import requests, os
-          url = os.environ.get('DINGTALK_WEBHOOK_URL', '')
-          if url:
-              requests.post(url, json={'msgtype':'text','text':{'content':'Redemption monitor failed, check GitHub Actions.'}}, timeout=10)
-          "
+      - name: Run report
+        run: python3 .github/workflows/daily-fund-report.py
