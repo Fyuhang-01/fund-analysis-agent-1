@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # Fund NAV daily monitor + DingTalk push (Cloud version)
-# Runs on GitHub Actions, independent of local computer
+# Reads fund config from fund-config.json
 
 import json
 import time
@@ -10,20 +10,24 @@ import base64
 import urllib.request
 import urllib.parse
 import ssl
+import os
 
 # ============ CONFIG ============
 DING_SECRET = "SEC58f66fb36f0de03f1f705233789fc4a6c23919d12b4055be705f3c2c982a05e7"
 DING_TOKEN  = "2f65acfca16629bf6a8ab3577fd9a08eecd5bc76ddba92842f636b805d81bb07"
 
-# [code, name, cost, buy_nav, stop_ratio, locked]
-FUNDS = [
-    ("023452", "中欧信息科技",   1812.56, 3.3642, -0.05, False),
-    ("014132", "华泰聚优智选",   5040.00, 0.5746, -0.05, True),
-    ("026200", "大摩港股通",     7623.79, 1.0000, -0.08, False),
-    ("016186", "广发电力",        200.00, 1.2846, -0.05, False),
-    ("008280", "国泰煤炭",        100.00, 2.4472, -0.05, False),
-    ("014162", "万家人工智能",    200.00, 4.5032, -0.05, False),
-]
+# Read fund list from JSON config (single source of truth)
+_script_dir = os.path.dirname(os.path.abspath(__file__))
+_config_path = os.path.join(os.path.dirname(_script_dir), "fund-config.json")
+if not os.path.exists(_config_path):
+    _config_path = "fund-config.json"
+
+with open(_config_path, "r", encoding="utf-8") as f:
+    FUNDS_RAW = json.load(f)
+
+# Convert to tuple format used internally
+FUNDS = [(f["code"], f["name"], float(f["cost"]), float(f["buyNav"]),
+          float(f["stopPct"]), f.get("locked", False)) for f in FUNDS_RAW]
 
 # ============ DINGTALK ============
 def send_ding(msg):
