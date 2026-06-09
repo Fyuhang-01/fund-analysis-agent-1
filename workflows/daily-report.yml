@@ -1,0 +1,18 @@
+name: 基金每日净值监控
+
+on:
+  schedule:
+    # 北京时间 21:30 = UTC 13:30 (工作日)
+    - cron: '30 13 * * 1-5'
+  workflow_dispatch:  # 允许手动触发
+
+jobs:
+  fund-report:
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Run report
+        run: python3 .github/workflows/daily-fund-report.py
