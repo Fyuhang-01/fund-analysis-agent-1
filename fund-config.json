@@ -1,7 +1,5 @@
 [
-  {"code": "023452", "name": "涓淇℃伅绉戞妧", "cost": 1812.56, "buyNav": 3.3642, "stopPct": -0.05, "locked": false},
   {"code": "014132", "name": "鍗庢嘲鑱氫紭鏅洪€?, "cost": 5040.00, "buyNav": 0.5746, "stopPct": -0.05, "locked": true},
-  {"code": "016186", "name": "骞垮彂鐢靛姏",     "cost": 200.00,  "buyNav": 1.2846, "stopPct": -0.05, "locked": false},
-  {"code": "008280", "name": "鍥芥嘲鐓ょ偔",     "cost": 100.00,  "buyNav": 2.4472, "stopPct": -0.05, "locked": false},
-  {"code": "014162", "name": "涓囧浜哄伐鏅鸿兘", "cost": 200.00,  "buyNav": 4.5032, "stopPct": -0.05, "locked": false}
+  {"code": "016186", "name": "骞垮彂鐢靛姏",     "cost": 2200.00, "buyNav": 1.1501, "stopPct": -0.05, "locked": false},
+  {"code": "008280", "name": "鍥芥嘲鐓ょ偔",     "cost": 100.00,  "buyNav": 2.4472, "stopPct": -0.05, "locked": false}
 ]
